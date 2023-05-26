@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![allow(clippy::missing_safety_doc)]
 
 use core::fmt::Debug;
 
@@ -17,35 +18,9 @@ impl Mmio {
         self.address
     }
 
-    pub unsafe fn write_u8(&mut self, value: u8, offset: usize) {
-        let ptr = (self.address + offset) as *mut u8;
+    gen_write_fn!(u8, i8, u16, i16, u32, i32, u64, i64, usize, isize);
 
-        ptr.write_volatile(value);
-    }
-
-    pub unsafe fn write_u32(&mut self, value: u32, offset: usize) {
-        let ptr = (self.address + offset) as *mut u32;
-
-        ptr.write_volatile(value);
-    }
-
-    pub unsafe fn read_u8(&self, offset: usize) -> u8 {
-        let ptr = (self.address + offset) as *const u8;
-
-        ptr.read_volatile()
-    }
-
-    pub unsafe fn read_u16(&self, offset: usize) -> u16 {
-        let ptr = (self.address + offset) as *const u16;
-
-        ptr.read_volatile()
-    }
-
-    pub unsafe fn read_u32(&self, offset: usize) -> u32 {
-        let ptr = (self.address + offset) as *const u32;
-
-        ptr.read_volatile()
-    }
+    gen_read_fn!(u8, i8, u16, i16, u32, i32, u64, i64, usize, isize);
 }
 
 impl Debug for Mmio {
@@ -54,4 +29,30 @@ impl Debug for Mmio {
             .field("address", &format_args!("{:#016X}", self.address))
             .finish()
     }
+}
+
+#[macro_export]
+macro_rules! gen_write_fn {
+    ( $($t:ty),+ ) => {
+        paste::item! {
+            $( pub unsafe fn [< write_$t >](&self, value: $t, offset: usize) {
+                let ptr = (self.address + offset) as *mut $t;
+
+                ptr.write_volatile(value);
+            } )+
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! gen_read_fn {
+    ( $($t:ty),+ ) => {
+        paste::item! {
+            $( pub unsafe fn [< read_$t >](&self, offset: usize) -> $t {
+                let ptr = (self.address + offset) as *const $t;
+
+                ptr.read_volatile()
+            } )+
+        }
+    };
 }

@@ -1,2 +1,2 @@
 [workspace]
-members = ["mmio", "pci", "tts"]
+members = ["mmio", "pci", "tts", "rtc", "serial_terminal"]

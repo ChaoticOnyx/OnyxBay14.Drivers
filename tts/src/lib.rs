@@ -1,7 +1,11 @@
 #![no_std]
 #![no_main]
 
-use drivers_pci::{PciDevice, PciDeviceBar};
+use core::time::Duration;
+
+use drivers_pci::PciDevice;
+
+pub const DEVICE_ID: u16 = 0x64;
 
 #[derive(Debug, Clone)]
 pub struct Tts {
@@ -9,38 +13,30 @@ pub struct Tts {
 }
 
 impl Tts {
-    fn bar_mut(&mut self) -> PciDeviceBar {
-        self.device.funcs()[0].bars()[0].unwrap()
+    pub unsafe fn string_length(&self) -> u32 {
+        self.device.mmio.read_u32(0x0)
     }
 
-    fn bar(&self) -> PciDeviceBar {
-        self.device.funcs()[0].bars()[0].unwrap()
+    pub unsafe fn speech_time(&self) -> Duration {
+        Duration::from_millis(self.device.mmio.read_u64(0x4))
+    }
+
+    pub unsafe fn is_ready(&self) -> bool {
+        self.device.mmio.read_u8(0x8) == 1
     }
 
     pub unsafe fn write_string(&mut self, text: &str) {
-        let PciDeviceBar(mut mmio) = self.bar_mut();
-
         for ch in text.as_bytes() {
-            mmio.write_u8(*ch, 0x0)
+            self.device.mmio.write_u8(*ch, 0x0)
         }
     }
 
-    pub unsafe fn string_length(&self) -> u32 {
-        let PciDeviceBar(mmio) = self.bar();
-
-        mmio.read_u32(0x0)
+    pub unsafe fn speech(&mut self) {
+        self.device.mmio.write_u8(0, 0x4);
     }
 
     pub unsafe fn flush(&mut self) {
-        let PciDeviceBar(mut mmio) = self.bar_mut();
-
-        mmio.write_u8(0, 0x2);
-    }
-
-    pub unsafe fn speech(&mut self) {
-        let PciDeviceBar(mut mmio) = self.bar_mut();
-
-        mmio.write_u8(0, 0x1);
+        self.device.mmio.write_u8(0, 0x8);
     }
 }
 
