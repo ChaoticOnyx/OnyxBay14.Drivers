@@ -1,5 +1,4 @@
 #![no_std]
-#![no_main]
 
 mod pci_device;
 
@@ -13,7 +12,7 @@ pub const PCI_DEVICE_IRQ_REG: usize = 0x3C;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Pci {
-    mmio: Mmio,
+    pub mmio: Mmio,
 }
 
 impl Pci {
@@ -47,7 +46,6 @@ impl Pci {
         let mmio = Mmio::new(mmio_address);
 
         Some(PciDevice {
-            address: base_offset,
             vendor_id: (ids >> 16) as u16,
             device_id: ids as u16,
             irq_line: irqs as u8,

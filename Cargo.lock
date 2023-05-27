@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "gpu"
+version = "0.1.0"
+dependencies = [
+ "pci",
+]
+
+[[package]]
 name = "mmio"
 version = "0.1.0"
 dependencies = [
@@ -27,6 +34,13 @@ name = "rtc"
 version = "0.1.0"
 dependencies = [
  "mmio",
+]
+
+[[package]]
+name = "screen"
+version = "0.1.0"
+dependencies = [
+ "pci",
 ]
 
 [[package]]

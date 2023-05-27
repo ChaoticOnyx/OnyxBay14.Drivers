@@ -1,5 +1,4 @@
 #![no_std]
-#![no_main]
 
 use core::time::Duration;
 
@@ -9,7 +8,7 @@ pub const DEVICE_ID: u16 = 0x64;
 
 #[derive(Debug, Clone)]
 pub struct Tts {
-    device: PciDevice,
+    pub device: PciDevice,
 }
 
 impl Tts {

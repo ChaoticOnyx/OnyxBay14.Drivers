@@ -1,5 +1,4 @@
 #![no_std]
-#![no_main]
 
 use core::time::Duration;
 
@@ -9,7 +8,7 @@ pub const MMIO_ADDRESS: usize = 0x101000;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Rtc {
-    mmio: Mmio,
+    pub mmio: Mmio,
 }
 
 impl Rtc {

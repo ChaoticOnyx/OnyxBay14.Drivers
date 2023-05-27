@@ -1,12 +1,11 @@
 #![no_std]
-#![no_main]
 #![allow(clippy::missing_safety_doc)]
 
 use core::fmt::Debug;
 
 #[derive(Clone, Copy)]
 pub struct Mmio {
-    address: usize,
+    pub address: usize,
 }
 
 impl Mmio {
@@ -14,13 +13,9 @@ impl Mmio {
         Self { address }
     }
 
-    pub fn address(&self) -> usize {
-        self.address
-    }
+    gen_write_fn!(u8, i8, u16, i16, u32, i32, f32, u64, i64, f64, usize, isize);
 
-    gen_write_fn!(u8, i8, u16, i16, u32, i32, u64, i64, usize, isize);
-
-    gen_read_fn!(u8, i8, u16, i16, u32, i32, u64, i64, usize, isize);
+    gen_read_fn!(u8, i8, u16, i16, u32, i32, f32, u64, i64, f64, usize, isize);
 }
 
 impl Debug for Mmio {

@@ -1,5 +1,4 @@
 #![no_std]
-#![no_main]
 
 use drivers_pci::PciDevice;
 
@@ -8,7 +7,7 @@ pub const BUFFER_SIZE: usize = 1024;
 
 #[derive(Debug, Clone)]
 pub struct SerialTerminal {
-    device: PciDevice,
+    pub device: PciDevice,
 }
 
 impl SerialTerminal {
