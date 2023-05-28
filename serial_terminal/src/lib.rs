@@ -1,5 +1,7 @@
 #![no_std]
 
+use core::fmt::Write;
+
 use drivers_pci::PciDevice;
 
 pub const DEVICE_ID: u16 = 0x65;
@@ -11,14 +13,6 @@ pub struct SerialTerminal {
 }
 
 impl SerialTerminal {
-    pub unsafe fn write_string(&mut self, text: &str) {
-        for ch in text.as_bytes() {
-            self.device.mmio.write_u8(*ch, 0x0)
-        }
-
-        self.device.mmio.write_u8(b'\0', 0x0);
-    }
-
     pub unsafe fn write_bytes(&mut self, bytes: &[u8]) {
         for byte in bytes {
             self.device.mmio.write_u8(*byte, 0x0);
@@ -63,5 +57,17 @@ impl SerialTerminal {
 impl From<PciDevice> for SerialTerminal {
     fn from(value: PciDevice) -> Self {
         Self { device: value }
+    }
+}
+
+impl Write for SerialTerminal {
+    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        unsafe {
+            for ch in s.as_bytes() {
+                self.device.mmio.write_u8(*ch, 0x0)
+            }
+
+            Ok(())
+        }
     }
 }
