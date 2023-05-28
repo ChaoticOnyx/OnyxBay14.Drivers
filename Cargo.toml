@@ -1,2 +1,11 @@
 [workspace]
-members = ["mmio", "pci", "tts", "rtc", "serial_terminal", "screen", "gpu"]
+members = [
+	"mmio",
+	"pci",
+	"tts",
+	"rtc",
+	"serial_terminal",
+	"screen",
+	"gpu",
+	"heap",
+]
