@@ -1,6 +1,8 @@
 #![no_std]
 
-use drivers_pci::PciDevice;
+use pci::PciDevice;
+
+pub const DEVICE_ID: u16 = 0x67;
 
 pub struct Screen {
     pub device: PciDevice,

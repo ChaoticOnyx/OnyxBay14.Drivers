@@ -1,6 +1,6 @@
 use crate::{
-    blend_mode::BlendMode, BufferType, FilterQuality, HintingLevel, PainterStyle, Pixel, Point,
-    PointMode,
+    blend_mode::BlendMode, FilterQuality, HintingLevel, ObjectType, PainterStyle, Pixel, Point,
+    PointMode, TextAlign,
 };
 
 #[derive(Debug, Clone)]
@@ -45,16 +45,42 @@ pub enum GpuOp {
         state: bool,
     },
     GetPainterDithering,
-    CreateBuffer {
-        ty: BufferType,
+    MesaureText {
+        object_id: u64,
+    },
+    SetPainterTypeface {
+        object_id: Option<u64>,
+    },
+    SetPainterTextSize {
+        size: f64,
+    },
+    GetPainterTextSize,
+    SetPainterTextScaleX {
+        scale: f64,
+    },
+    GetPainterTextScaleX,
+    SetPainterTextSkewX {
+        skew: f64,
+    },
+    GetPainterTextSkewX,
+    SetPainterTextAlign {
+        align: TextAlign,
+    },
+    GetPainterTextAlign,
+    SetPainterSubpixelText {
+        state: bool,
+    },
+    GetPainterSubpixelText,
+    CreateObject {
+        ty: ObjectType,
         address: usize,
         size: usize,
         length: usize,
     },
-    DeleteBuffer {
+    DeleteObject {
         id: u64,
     },
-    DeleteAllBuffers,
+    DeleteAllObjects,
     DrawPixel {
         x: f64,
         y: f64,
@@ -83,8 +109,12 @@ pub enum GpuOp {
         hcenter: Point,
     },
     DrawPoints {
-        buffer_id: u64,
+        object_id: u64,
         mode: PointMode,
+    },
+    DrawText {
+        object_id: u64,
+        point: Point,
     },
 }
 
@@ -113,11 +143,23 @@ impl GpuOp {
             GpuOp::GetPainterAntialiasing => 0x10D,
             GpuOp::SetPainterDithering { .. } => 0x10E,
             GpuOp::GetPainterDithering => 0x10F,
+            GpuOp::MesaureText { .. } => 0x110,
+            GpuOp::SetPainterTypeface { .. } => 0x111,
+            GpuOp::SetPainterTextSize { .. } => 0x112,
+            GpuOp::GetPainterTextSize => 0x113,
+            GpuOp::SetPainterTextScaleX { .. } => 0x114,
+            GpuOp::GetPainterTextScaleX => 0x115,
+            GpuOp::SetPainterTextSkewX { .. } => 0x116,
+            GpuOp::GetPainterTextSkewX => 0x117,
+            GpuOp::SetPainterTextAlign { .. } => 0x118,
+            GpuOp::GetPainterTextAlign => 0x119,
+            GpuOp::SetPainterSubpixelText { .. } => 0x11A,
+            GpuOp::GetPainterSubpixelText => 0x11B,
 
-            // Buffers ops
-            GpuOp::CreateBuffer { .. } => 0x500,
-            GpuOp::DeleteBuffer { .. } => 0x501,
-            GpuOp::DeleteAllBuffers => 0x502,
+            // Objects ops
+            GpuOp::CreateObject { .. } => 0x500,
+            GpuOp::DeleteObject { .. } => 0x501,
+            GpuOp::DeleteAllObjects => 0x502,
 
             // Drawing ops
             GpuOp::DrawPixel { .. } => 0x1000,
@@ -127,6 +169,7 @@ impl GpuOp {
             GpuOp::DrawCircle { .. } => 0x1004,
             GpuOp::DrawOval { .. } => 0x1005,
             GpuOp::DrawPoints { .. } => 0x1006,
+            GpuOp::DrawText { .. } => 0x1007,
         }
     }
 }

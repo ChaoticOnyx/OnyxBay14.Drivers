@@ -2,7 +2,7 @@
 
 use core::time::Duration;
 
-use drivers_pci::PciDevice;
+use pci::PciDevice;
 
 pub const DEVICE_ID: u16 = 0x64;
 

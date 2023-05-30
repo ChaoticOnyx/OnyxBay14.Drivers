@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(C)]
+#[repr(u8)]
 pub enum BlendMode {
     Clear = 0,
     Src = 1,
@@ -32,38 +32,12 @@ pub enum BlendMode {
     Luminosity = 28,
 }
 
-impl From<i64> for BlendMode {
-    fn from(value: i64) -> Self {
-        match value {
-            1 => Self::Src,
-            2 => Self::Dst,
-            3 => Self::SrcOver,
-            4 => Self::DstOver,
-            5 => Self::SrcIn,
-            6 => Self::DstIn,
-            7 => Self::SrcOut,
-            8 => Self::DstOut,
-            9 => Self::SrcATop,
-            10 => Self::DstATop,
-            11 => Self::Xor,
-            12 => Self::Plus,
-            13 => Self::Modulate,
-            14 => Self::Screen,
-            15 => Self::Overlay,
-            16 => Self::Darken,
-            17 => Self::Lighten,
-            18 => Self::ColorDodge,
-            19 => Self::ColorBurn,
-            20 => Self::HardLight,
-            21 => Self::SoftLight,
-            22 => Self::Difference,
-            23 => Self::Exclusion,
-            24 => Self::Multiply,
-            25 => Self::Hue,
-            26 => Self::Saturation,
-            27 => Self::Color,
-            28 => Self::Luminosity,
-            _ => Self::Clear,
+impl From<u8> for BlendMode {
+    fn from(value: u8) -> Self {
+        if value >= Self::Clear as u8 && value <= Self::Luminosity as u8 {
+            unsafe { core::mem::transmute(value) }
+        } else {
+            Self::Clear
         }
     }
 }

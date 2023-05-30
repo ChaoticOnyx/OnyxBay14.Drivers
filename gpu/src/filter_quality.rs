@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-#[repr(C)]
+#[repr(u8)]
 pub enum FilterQuality {
     None = 0,
     Low = 1,
@@ -7,13 +7,12 @@ pub enum FilterQuality {
     High = 3,
 }
 
-impl From<i64> for FilterQuality {
-    fn from(value: i64) -> Self {
-        match value {
-            1 => Self::Low,
-            2 => Self::Medium,
-            3 => Self::High,
-            _ => Self::None,
+impl From<u8> for FilterQuality {
+    fn from(value: u8) -> Self {
+        if value >= Self::None as u8 && value <= Self::High as u8 {
+            unsafe { core::mem::transmute(value) }
+        } else {
+            Self::None
         }
     }
 }

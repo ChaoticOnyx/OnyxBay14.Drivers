@@ -2,7 +2,7 @@
 
 use core::fmt::Write;
 
-use drivers_pci::PciDevice;
+use pci::PciDevice;
 
 pub const DEVICE_ID: u16 = 0x65;
 pub const BUFFER_SIZE: usize = 1024;

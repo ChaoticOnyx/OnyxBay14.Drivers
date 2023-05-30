@@ -1,8 +1,9 @@
 const ARGUMENTS_OFFSET: usize = 0x100;
 
+#[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum GpuArgument {
-    Arg0,
+    Arg0 = 0,
     Arg1,
     Arg2,
     Arg3,
@@ -16,19 +17,16 @@ pub enum GpuArgument {
 
 impl GpuArgument {
     pub fn offset(&self) -> usize {
-        let offset = match self {
-            GpuArgument::Arg0 => 0,
-            GpuArgument::Arg1 => 1,
-            GpuArgument::Arg2 => 2,
-            GpuArgument::Arg3 => 3,
-            GpuArgument::Arg4 => 4,
-            GpuArgument::Arg5 => 5,
-            GpuArgument::Arg6 => 6,
-            GpuArgument::Arg7 => 7,
-            GpuArgument::Arg8 => 8,
-            GpuArgument::Arg9 => 9,
-        };
+        *self as usize + ARGUMENTS_OFFSET
+    }
+}
 
-        offset + ARGUMENTS_OFFSET
+impl From<u8> for GpuArgument {
+    fn from(value: u8) -> Self {
+        if value >= Self::Arg0 as u8 && value <= Self::Arg9 as u8 {
+            unsafe { core::mem::transmute(value) }
+        } else {
+            Self::Arg0
+        }
     }
 }

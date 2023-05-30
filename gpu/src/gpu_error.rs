@@ -1,4 +1,4 @@
-#[repr(C)]
+#[repr(i64)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum GpuError {
     NotInitialized = -1,
@@ -11,13 +11,10 @@ pub enum GpuError {
 
 impl From<i64> for GpuError {
     fn from(value: i64) -> Self {
-        match value {
-            -1 => Self::NotInitialized,
-            -2 => Self::InvalidSize,
-            -3 => Self::UnknownBuffer,
-            -4 => Self::InvalidBuffer,
-            -5 => Self::NotEnoughMemory,
-            _ => Self::Unknown,
+        if value >= Self::NotInitialized as i64 && value <= Self::NotEnoughMemory as i64 {
+            unsafe { core::mem::transmute(value) }
+        } else {
+            Self::Unknown
         }
     }
 }

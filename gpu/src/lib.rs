@@ -1,30 +1,34 @@
 #![no_std]
 
 mod blend_mode;
-mod buffer;
 mod filter_quality;
 mod gpu_argument;
 mod gpu_error;
 mod gpu_op;
 mod hinting_level;
+mod object;
 mod painter_style;
 mod pixel;
 mod point;
 mod points_mode;
+mod text_align;
 
 pub use blend_mode::BlendMode;
-pub use buffer::BufferType;
 pub use filter_quality::FilterQuality;
 pub use gpu_argument::GpuArgument;
 pub use gpu_error::GpuError;
 pub use gpu_op::GpuOp;
 pub use hinting_level::HintingLevel;
+pub use object::ObjectType;
 pub use painter_style::PainterStyle;
 pub use pixel::Pixel;
 pub use point::Point;
 pub use points_mode::PointMode;
+pub use text_align::TextAlign;
 
-use drivers_pci::PciDevice;
+use pci::PciDevice;
+
+pub const DEVICE_ID: u16 = 0x66;
 
 pub struct Gpu {
     pub device: PciDevice,
@@ -108,7 +112,25 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, state as i64 as f64)
             }
             GpuOp::GetPainterDithering => {}
-            GpuOp::CreateBuffer {
+            GpuOp::MesaureText { object_id } => self.set_arg(GpuArgument::Arg0, object_id as f64),
+            GpuOp::SetPainterTypeface { object_id } => {
+                self.set_arg(GpuArgument::Arg0, object_id.unwrap_or_default() as f64)
+            }
+            GpuOp::SetPainterTextSize { size } => self.set_arg(GpuArgument::Arg0, size),
+            GpuOp::GetPainterTextSize => {}
+            GpuOp::SetPainterTextScaleX { scale } => self.set_arg(GpuArgument::Arg0, scale),
+            GpuOp::GetPainterTextScaleX => {}
+            GpuOp::SetPainterTextSkewX { skew } => self.set_arg(GpuArgument::Arg0, skew),
+            GpuOp::GetPainterTextSkewX => {}
+            GpuOp::SetPainterTextAlign { align } => {
+                self.set_arg(GpuArgument::Arg0, align as i64 as f64)
+            }
+            GpuOp::GetPainterTextAlign => {}
+            GpuOp::SetPainterSubpixelText { state } => {
+                self.set_arg(GpuArgument::Arg0, if state { 1f64 } else { 0f64 })
+            }
+            GpuOp::GetPainterSubpixelText => {}
+            GpuOp::CreateObject {
                 ty,
                 address,
                 size,
@@ -119,10 +141,10 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg2, size as f64);
                 self.set_arg(GpuArgument::Arg3, length as f64);
             }
-            GpuOp::DeleteBuffer { id } => {
-                self.set_arg(GpuArgument::Arg0, id as f64);
+            GpuOp::DeleteObject { id: object_id } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
             }
-            GpuOp::DeleteAllBuffers => {}
+            GpuOp::DeleteAllObjects => {}
             GpuOp::DrawPixel { x, y } => {
                 self.set_arg(GpuArgument::Arg0, x);
                 self.set_arg(GpuArgument::Arg1, y);
@@ -167,9 +189,14 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg2, hcenter.x);
                 self.set_arg(GpuArgument::Arg3, hcenter.y);
             }
-            GpuOp::DrawPoints { buffer_id, mode } => {
-                self.set_arg(GpuArgument::Arg0, buffer_id as f64);
+            GpuOp::DrawPoints { object_id, mode } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
                 self.set_arg(GpuArgument::Arg1, mode as u64 as f64);
+            }
+            GpuOp::DrawText { object_id, point } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
+                self.set_arg(GpuArgument::Arg1, point.x);
+                self.set_arg(GpuArgument::Arg2, point.y);
             }
         }
 

@@ -2,7 +2,7 @@
 
 use core::time::Duration;
 
-use drivers_mmio::Mmio;
+use mmio::Mmio;
 
 pub const MMIO_ADDRESS: usize = 0x101000;
 
