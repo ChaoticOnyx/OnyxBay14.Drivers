@@ -35,28 +35,16 @@ pub struct Gpu {
 }
 
 impl Gpu {
-    pub unsafe fn is_double_buffered(&self) -> bool {
-        self.device.mmio.read_u8(0x1) == 1
-    }
-
-    pub unsafe fn set_double_buffered(&mut self, state: bool) {
-        if state {
-            self.device.mmio.write_u8(1, 0x1)
-        } else {
-            self.device.mmio.write_u8(0, 0x1)
-        }
-    }
-
     pub unsafe fn flip_buffers(&mut self) {
-        self.device.mmio.write_u8(0x1, 0x2);
+        self.device.mmio.write_u8(0x1, 0x1);
     }
 
     pub unsafe fn width(&self) -> u32 {
-        self.device.mmio.read_u32(0x2)
+        self.device.mmio.read_u32(0x1)
     }
 
     pub unsafe fn height(&self) -> u32 {
-        self.device.mmio.read_u32(0x3)
+        self.device.mmio.read_u32(0x2)
     }
 
     pub unsafe fn arg(&self, arg: GpuArgument) -> f64 {
