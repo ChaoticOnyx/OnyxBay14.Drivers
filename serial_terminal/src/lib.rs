@@ -16,10 +16,6 @@ impl SerialTerminal {
     pub unsafe fn write_bytes(&mut self, bytes: &[u8]) {
         for byte in bytes {
             self.device.mmio.write_u8(*byte, 0x0);
-
-            if *byte == 0 {
-                return;
-            }
         }
     }
 
