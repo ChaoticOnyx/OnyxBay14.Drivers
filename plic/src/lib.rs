@@ -6,7 +6,7 @@ pub use irq::Irq;
 
 use mmio::Mmio;
 
-pub const MMIO_ADDRESS: usize = 0xC000000;
+pub const MMIO_ADDRESS: usize = 0x5000;
 const THRESHOLD_REGISTER: usize = 0;
 const PENDING_IRQ_REGISTER: usize = 1;
 const IRQ_INFO_REGISTER: usize = 1;

@@ -6,6 +6,7 @@ use mmio::Mmio;
 pub use pci_device::PciDevice;
 use pci_device::PciDeviceIterator;
 
+const MMIO_ADDRESS: usize = 0x10000;
 const INFO_REGISTER: usize = 0;
 const ADDRESS_REGISTER: usize = 1;
 
@@ -58,7 +59,7 @@ impl PciBus {
 impl Default for PciBus {
     fn default() -> Self {
         Self {
-            mmio: Mmio::new(0x30000000),
+            mmio: Mmio::new(MMIO_ADDRESS),
         }
     }
 }

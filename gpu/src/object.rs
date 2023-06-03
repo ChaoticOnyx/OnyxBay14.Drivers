@@ -5,6 +5,8 @@ pub enum ObjectType {
     Vertices = 1,
     Text = 2,
     Typeface = 3,
+    Bitmap = 4,
+    Surface = 5,
 }
 
 impl From<u8> for ObjectType {

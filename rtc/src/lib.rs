@@ -4,7 +4,7 @@ use core::time::Duration;
 
 use mmio::Mmio;
 
-pub const MMIO_ADDRESS: usize = 0x101000;
+pub const MMIO_ADDRESS: usize = 0x1000;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Rtc {

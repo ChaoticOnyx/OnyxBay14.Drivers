@@ -2,7 +2,7 @@
 
 use mmio::Mmio;
 
-pub const MMIO_ADDRESS: usize = 0x200000;
+pub const MMIO_ADDRESS: usize = 0x2000;
 const HAS_BATTERY_REGISTER: usize = 0x0;
 const BATTERY_CAPACITY_REGISTER: usize = 0x1;
 const BATTERY_CHARGE_REGISTER: usize = 0x2;

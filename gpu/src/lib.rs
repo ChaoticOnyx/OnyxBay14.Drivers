@@ -1,6 +1,7 @@
 #![no_std]
 
 mod blend_mode;
+mod color;
 mod filter_quality;
 mod gpu_argument;
 mod gpu_error;
@@ -8,12 +9,13 @@ mod gpu_op;
 mod hinting_level;
 mod object;
 mod painter_style;
-mod pixel;
 mod point;
 mod points_mode;
+mod rect;
 mod text_align;
 
 pub use blend_mode::BlendMode;
+pub use color::Color;
 pub use filter_quality::FilterQuality;
 pub use gpu_argument::GpuArgument;
 pub use gpu_error::GpuError;
@@ -21,9 +23,9 @@ pub use gpu_op::GpuOp;
 pub use hinting_level::HintingLevel;
 pub use object::ObjectType;
 pub use painter_style::PainterStyle;
-pub use pixel::Pixel;
 pub use point::Point;
 pub use points_mode::PointMode;
+pub use rect::Rect;
 pub use text_align::TextAlign;
 
 use pci::PciDevice;
@@ -65,11 +67,11 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, x);
                 self.set_arg(GpuArgument::Arg1, y);
             }
-            GpuOp::SetPainterColor { pixel } => {
-                self.set_arg(GpuArgument::Arg0, pixel.r as f64);
-                self.set_arg(GpuArgument::Arg1, pixel.g as f64);
-                self.set_arg(GpuArgument::Arg2, pixel.b as f64);
-                self.set_arg(GpuArgument::Arg3, pixel.a as f64);
+            GpuOp::SetPainterColor { color } => {
+                self.set_arg(GpuArgument::Arg0, color.r as f64);
+                self.set_arg(GpuArgument::Arg1, color.g as f64);
+                self.set_arg(GpuArgument::Arg2, color.b as f64);
+                self.set_arg(GpuArgument::Arg3, color.a as f64);
             }
             GpuOp::GetPainterColor => {}
             GpuOp::SetPainterStyle { style } => {
@@ -118,6 +120,10 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, if state { 1f64 } else { 0f64 })
             }
             GpuOp::GetPainterSubpixelText => {}
+            GpuOp::MesaureString { address, length } => {
+                self.set_arg(GpuArgument::Arg0, address as f64);
+                self.set_arg(GpuArgument::Arg1, length as f64);
+            }
             GpuOp::CreateObject {
                 ty,
                 address,
@@ -129,10 +135,26 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg2, size as f64);
                 self.set_arg(GpuArgument::Arg3, length as f64);
             }
-            GpuOp::DeleteObject { id: object_id } => {
+            GpuOp::DeleteObject { object_id } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
             }
             GpuOp::DeleteAllObjects => {}
+            GpuOp::CreateImageObject {
+                width,
+                height,
+                address,
+            } => {
+                self.set_arg(GpuArgument::Arg0, width as f64);
+                self.set_arg(GpuArgument::Arg1, height as f64);
+                self.set_arg(GpuArgument::Arg2, address as f64);
+            }
+            GpuOp::CreateSurfaceObject { width, height } => {
+                self.set_arg(GpuArgument::Arg0, width as f64);
+                self.set_arg(GpuArgument::Arg1, height as f64);
+            }
+            GpuOp::SwitchSurface { object_id } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
+            }
             GpuOp::DrawPixel { x, y } => {
                 self.set_arg(GpuArgument::Arg0, x);
                 self.set_arg(GpuArgument::Arg1, y);
@@ -185,6 +207,43 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
                 self.set_arg(GpuArgument::Arg1, point.x);
                 self.set_arg(GpuArgument::Arg2, point.y);
+            }
+            GpuOp::DrawImage { object_id, point } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
+                self.set_arg(GpuArgument::Arg1, point.x);
+                self.set_arg(GpuArgument::Arg2, point.y);
+            }
+            GpuOp::DrawImageRect { object_id, dst } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
+                self.set_arg(GpuArgument::Arg1, dst.left);
+                self.set_arg(GpuArgument::Arg2, dst.top);
+                self.set_arg(GpuArgument::Arg3, dst.right);
+                self.set_arg(GpuArgument::Arg4, dst.bottom);
+            }
+            GpuOp::DrawImageRectSrc {
+                object_id,
+                src,
+                dst,
+            } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
+                self.set_arg(GpuArgument::Arg1, src.left);
+                self.set_arg(GpuArgument::Arg2, src.top);
+                self.set_arg(GpuArgument::Arg3, src.right);
+                self.set_arg(GpuArgument::Arg4, src.bottom);
+                self.set_arg(GpuArgument::Arg5, dst.left);
+                self.set_arg(GpuArgument::Arg6, dst.top);
+                self.set_arg(GpuArgument::Arg7, dst.right);
+                self.set_arg(GpuArgument::Arg8, dst.bottom);
+            }
+            GpuOp::DrawString {
+                point,
+                address,
+                length,
+            } => {
+                self.set_arg(GpuArgument::Arg0, point.x);
+                self.set_arg(GpuArgument::Arg1, point.y);
+                self.set_arg(GpuArgument::Arg2, address as f64);
+                self.set_arg(GpuArgument::Arg3, length as f64);
             }
         }
 

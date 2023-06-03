@@ -1,6 +1,6 @@
 use crate::{
-    blend_mode::BlendMode, FilterQuality, HintingLevel, ObjectType, PainterStyle, Pixel, Point,
-    PointMode, TextAlign,
+    blend_mode::BlendMode, Color, FilterQuality, HintingLevel, ObjectType, PainterStyle, Point,
+    PointMode, Rect, TextAlign,
 };
 
 #[derive(Debug, Clone)]
@@ -14,7 +14,7 @@ pub enum GpuOp {
         y: f64,
     },
     SetPainterColor {
-        pixel: Pixel,
+        color: Color,
     },
     GetPainterColor,
     SetPainterStyle {
@@ -71,6 +71,10 @@ pub enum GpuOp {
         state: bool,
     },
     GetPainterSubpixelText,
+    MesaureString {
+        address: usize,
+        length: usize,
+    },
     CreateObject {
         ty: ObjectType,
         address: usize,
@@ -78,9 +82,21 @@ pub enum GpuOp {
         length: usize,
     },
     DeleteObject {
-        id: u64,
+        object_id: u64,
     },
     DeleteAllObjects,
+    CreateImageObject {
+        width: u64,
+        height: u64,
+        address: usize,
+    },
+    CreateSurfaceObject {
+        width: u64,
+        height: u64,
+    },
+    SwitchSurface {
+        object_id: u64,
+    },
     DrawPixel {
         x: f64,
         y: f64,
@@ -115,6 +131,24 @@ pub enum GpuOp {
     DrawText {
         object_id: u64,
         point: Point,
+    },
+    DrawImage {
+        object_id: u64,
+        point: Point,
+    },
+    DrawImageRect {
+        object_id: u64,
+        dst: Rect,
+    },
+    DrawImageRectSrc {
+        object_id: u64,
+        src: Rect,
+        dst: Rect,
+    },
+    DrawString {
+        point: Point,
+        address: usize,
+        length: usize,
     },
 }
 
@@ -155,11 +189,15 @@ impl GpuOp {
             GpuOp::GetPainterTextAlign => 0x119,
             GpuOp::SetPainterSubpixelText { .. } => 0x11A,
             GpuOp::GetPainterSubpixelText => 0x11B,
+            GpuOp::MesaureString { .. } => 0x11C,
 
             // Objects ops
             GpuOp::CreateObject { .. } => 0x500,
             GpuOp::DeleteObject { .. } => 0x501,
             GpuOp::DeleteAllObjects => 0x502,
+            GpuOp::CreateImageObject { .. } => 0x503,
+            GpuOp::CreateSurfaceObject { .. } => 0x504,
+            GpuOp::SwitchSurface { .. } => 0x505,
 
             // Drawing ops
             GpuOp::DrawPixel { .. } => 0x1000,
@@ -170,6 +208,10 @@ impl GpuOp {
             GpuOp::DrawOval { .. } => 0x1005,
             GpuOp::DrawPoints { .. } => 0x1006,
             GpuOp::DrawText { .. } => 0x1007,
+            GpuOp::DrawImage { .. } => 0x1008,
+            GpuOp::DrawImageRect { .. } => 0x1009,
+            GpuOp::DrawImageRectSrc { .. } => 0x100A,
+            GpuOp::DrawString { .. } => 0x100B,
         }
     }
 }
