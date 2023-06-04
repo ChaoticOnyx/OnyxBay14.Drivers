@@ -203,15 +203,21 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
                 self.set_arg(GpuArgument::Arg1, mode as u64 as f64);
             }
-            GpuOp::DrawText { object_id, point } => {
+            GpuOp::DrawText {
+                object_id,
+                position,
+            } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
-                self.set_arg(GpuArgument::Arg1, point.x);
-                self.set_arg(GpuArgument::Arg2, point.y);
+                self.set_arg(GpuArgument::Arg1, position.x);
+                self.set_arg(GpuArgument::Arg2, position.y);
             }
-            GpuOp::DrawImage { object_id, point } => {
+            GpuOp::DrawImage {
+                object_id,
+                position,
+            } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
-                self.set_arg(GpuArgument::Arg1, point.x);
-                self.set_arg(GpuArgument::Arg2, point.y);
+                self.set_arg(GpuArgument::Arg1, position.x);
+                self.set_arg(GpuArgument::Arg2, position.y);
             }
             GpuOp::DrawImageRect { object_id, dst } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
@@ -236,12 +242,12 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg8, dst.bottom);
             }
             GpuOp::DrawString {
-                point,
+                position,
                 address,
                 length,
             } => {
-                self.set_arg(GpuArgument::Arg0, point.x);
-                self.set_arg(GpuArgument::Arg1, point.y);
+                self.set_arg(GpuArgument::Arg0, position.x);
+                self.set_arg(GpuArgument::Arg1, position.y);
                 self.set_arg(GpuArgument::Arg2, address as f64);
                 self.set_arg(GpuArgument::Arg3, length as f64);
             }

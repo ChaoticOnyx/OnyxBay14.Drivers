@@ -130,11 +130,11 @@ pub enum GpuOp {
     },
     DrawText {
         object_id: u64,
-        point: Point,
+        position: Point,
     },
     DrawImage {
         object_id: u64,
-        point: Point,
+        position: Point,
     },
     DrawImageRect {
         object_id: u64,
@@ -146,7 +146,7 @@ pub enum GpuOp {
         dst: Rect,
     },
     DrawString {
-        point: Point,
+        position: Point,
         address: usize,
         length: usize,
     },
