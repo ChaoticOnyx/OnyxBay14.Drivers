@@ -1,0 +1,9 @@
+[package]
+name = "sgl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pci = { path = "../pci", package = "pci" }
+gpu = { path = "../gpu", package = "gpu" }
+screen = { path = "../screen", package = "screen" }

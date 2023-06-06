@@ -75,6 +75,7 @@ pub enum GpuOp {
         address: usize,
         length: usize,
     },
+    GetPainterTypeface,
     CreateObject {
         ty: ObjectType,
         address: usize,
@@ -190,6 +191,7 @@ impl GpuOp {
             GpuOp::SetPainterSubpixelText { .. } => 0x11A,
             GpuOp::GetPainterSubpixelText => 0x11B,
             GpuOp::MesaureString { .. } => 0x11C,
+            GpuOp::GetPainterTypeface => 0x11D,
 
             // Objects ops
             GpuOp::CreateObject { .. } => 0x500,

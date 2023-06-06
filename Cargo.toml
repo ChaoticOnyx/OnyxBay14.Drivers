@@ -11,4 +11,9 @@ members = [
 	"hid",
 	"plic",
 	"apm",
+	"bsod",
+	"sgl",
+	"health_analyzer",
+	"stack_string",
+	"clint",
 ]

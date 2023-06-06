@@ -124,6 +124,7 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, address as f64);
                 self.set_arg(GpuArgument::Arg1, length as f64);
             }
+            GpuOp::GetPainterTypeface => {}
             GpuOp::CreateObject {
                 ty,
                 address,

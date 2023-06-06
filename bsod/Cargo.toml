@@ -1,0 +1,9 @@
+[package]
+name = "bsod"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+riscv = "0.10.1"
+sgl = { path = "../sgl", package = "sgl" }
+stack_string = { path = "../stack_string", package = "stack_string" }
