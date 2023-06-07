@@ -22,8 +22,10 @@ impl Clint {
         self.mmio.read_usize(GET_TIME_CMP_REGISTER)
     }
 
+    #[deprecated = "Does not work"]
     pub unsafe fn rebase_timer(&mut self, value: usize) {
-        self.mmio.write_usize(value, REBASE_TIMER_REGISTER);
+        unimplemented!()
+        // self.mmio.write_usize(value, REBASE_TIMER_REGISTER);
     }
 
     pub unsafe fn set_time_cmp(&mut self, value: usize) {

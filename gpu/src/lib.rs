@@ -7,7 +7,6 @@ mod gpu_argument;
 mod gpu_error;
 mod gpu_op;
 mod hinting_level;
-mod object;
 mod painter_style;
 mod point;
 mod points_mode;
@@ -21,7 +20,6 @@ pub use gpu_argument::GpuArgument;
 pub use gpu_error::GpuError;
 pub use gpu_op::GpuOp;
 pub use hinting_level::HintingLevel;
-pub use object::ObjectType;
 pub use painter_style::PainterStyle;
 pub use point::Point;
 pub use points_mode::PointMode;
@@ -125,16 +123,14 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg1, length as f64);
             }
             GpuOp::GetPainterTypeface => {}
-            GpuOp::CreateObject {
-                ty,
+            GpuOp::CreatePointsObject {
                 address,
                 size,
                 length,
             } => {
-                self.set_arg(GpuArgument::Arg0, ty as i64 as f64);
-                self.set_arg(GpuArgument::Arg1, address as f64);
-                self.set_arg(GpuArgument::Arg2, size as f64);
-                self.set_arg(GpuArgument::Arg3, length as f64);
+                self.set_arg(GpuArgument::Arg0, address as f64);
+                self.set_arg(GpuArgument::Arg1, size as f64);
+                self.set_arg(GpuArgument::Arg2, length as f64);
             }
             GpuOp::DeleteObject { object_id } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
@@ -155,6 +151,14 @@ impl Gpu {
             }
             GpuOp::SwitchSurface { object_id } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
+            }
+            GpuOp::CreateTypefaceObject { address, size } => {
+                self.set_arg(GpuArgument::Arg0, address as f64);
+                self.set_arg(GpuArgument::Arg1, size as f64);
+            }
+            GpuOp::CreateTextObject { address, size } => {
+                self.set_arg(GpuArgument::Arg0, address as f64);
+                self.set_arg(GpuArgument::Arg1, size as f64);
             }
             GpuOp::DrawPixel { x, y } => {
                 self.set_arg(GpuArgument::Arg0, x);

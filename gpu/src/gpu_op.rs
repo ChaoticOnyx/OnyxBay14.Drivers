@@ -1,6 +1,6 @@
 use crate::{
-    blend_mode::BlendMode, Color, FilterQuality, HintingLevel, ObjectType, PainterStyle, Point,
-    PointMode, Rect, TextAlign,
+    blend_mode::BlendMode, Color, FilterQuality, HintingLevel, PainterStyle, Point, PointMode,
+    Rect, TextAlign,
 };
 
 #[derive(Debug, Clone)]
@@ -76,8 +76,7 @@ pub enum GpuOp {
         length: usize,
     },
     GetPainterTypeface,
-    CreateObject {
-        ty: ObjectType,
+    CreatePointsObject {
         address: usize,
         size: usize,
         length: usize,
@@ -97,6 +96,14 @@ pub enum GpuOp {
     },
     SwitchSurface {
         object_id: u64,
+    },
+    CreateTypefaceObject {
+        address: usize,
+        size: usize,
+    },
+    CreateTextObject {
+        address: usize,
+        size: usize,
     },
     DrawPixel {
         x: f64,
@@ -194,12 +201,14 @@ impl GpuOp {
             GpuOp::GetPainterTypeface => 0x11D,
 
             // Objects ops
-            GpuOp::CreateObject { .. } => 0x500,
+            GpuOp::CreatePointsObject { .. } => 0x500,
             GpuOp::DeleteObject { .. } => 0x501,
             GpuOp::DeleteAllObjects => 0x502,
             GpuOp::CreateImageObject { .. } => 0x503,
             GpuOp::CreateSurfaceObject { .. } => 0x504,
             GpuOp::SwitchSurface { .. } => 0x505,
+            GpuOp::CreateTypefaceObject { .. } => 0x506,
+            GpuOp::CreateTextObject { .. } => 0x507,
 
             // Drawing ops
             GpuOp::DrawPixel { .. } => 0x1000,

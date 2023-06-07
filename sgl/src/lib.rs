@@ -1,6 +1,6 @@
 #![no_std]
 
-use gpu::{Color, Gpu, GpuOp, ObjectType, Point, Rect, TextAlign};
+use gpu::{Color, Gpu, GpuOp, Point, Rect, TextAlign};
 use pci::PciBus;
 use screen::Screen;
 
@@ -55,11 +55,9 @@ impl Sgl {
     pub fn create_text_object(&mut self, text: &str) -> u64 {
         unsafe {
             self.gpu
-                .call_op(GpuOp::CreateObject {
-                    ty: ObjectType::Text,
+                .call_op(GpuOp::CreateTextObject {
                     address: text.as_ptr() as usize,
-                    size: 1,
-                    length: text.len(),
+                    size: text.len(),
                 })
                 .unwrap() as u64
         }
@@ -221,11 +219,9 @@ impl Sgl {
     pub fn create_typeface(&mut self, data: &[u8]) -> u64 {
         unsafe {
             self.gpu
-                .call_op(GpuOp::CreateObject {
-                    ty: ObjectType::Typeface,
+                .call_op(GpuOp::CreateTypefaceObject {
                     address: data.as_ptr() as usize,
                     size: data.len(),
-                    length: 1,
                 })
                 .unwrap() as u64
         }
