@@ -17,3 +17,4 @@ members = [
 	"stack_string",
 	"clint",
 ]
+resolver = "2"

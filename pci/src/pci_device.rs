@@ -14,6 +14,8 @@ pub struct PciDevice {
 
 impl Debug for PciDevice {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        // Stupid linter
+        #[allow(clippy::let_unit_value)]
         let mmio = self.mmio.fmt(f)?;
 
         f.debug_struct("PciDevice")

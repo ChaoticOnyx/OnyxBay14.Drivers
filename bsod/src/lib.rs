@@ -4,7 +4,7 @@
 use core::panic::Location;
 
 use sgl::{
-    gpu::{Color, TextAlign},
+    gpu::{Boundable, BoundableExt, Color, MutPositionable, TextAlign},
     Sgl, Text,
 };
 use stack_string::StackString;
@@ -33,13 +33,13 @@ pub fn bsod(sgl: &mut Sgl, reason: Option<&str>, location: Option<&Location>) ->
 
         let mut text_pos = sgl.bounds().center();
 
-        let panic_text = Text::new_static(PANIC_TEXT, sgl)
+        let panic_text = Text::new_dynamic(PANIC_TEXT)
             .with_color(TEXT_COLOR)
             .with_size(Some(FONT_SIZE))
             .with_align(TextAlign::Center)
             .with_position(text_pos);
 
-        panic_text.draw(sgl);
+        sgl.draw_text(&panic_text);
 
         text_pos.y += FONT_SIZE - 14.0;
 
@@ -50,7 +50,7 @@ pub fn bsod(sgl: &mut Sgl, reason: Option<&str>, location: Option<&Location>) ->
                 .with_align(TextAlign::Center)
                 .with_position(text_pos);
 
-            reason_text.draw(sgl);
+            sgl.draw_text(&reason_text);
 
             text_pos.y += FONT_SIZE - 14.0;
         }
@@ -76,10 +76,10 @@ pub fn bsod(sgl: &mut Sgl, reason: Option<&str>, location: Option<&Location>) ->
                 .with_align(TextAlign::Center)
                 .with_position(text_pos);
 
-            text.draw(sgl);
+            sgl.draw_text(&text);
         }
 
-        sgl.flip_buffers();
+        sgl.flush();
 
         loop {
             riscv::asm::wfi();

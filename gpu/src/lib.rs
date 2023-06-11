@@ -1,3 +1,4 @@
+#![allow(clippy::missing_safety_doc)]
 #![no_std]
 
 mod blend_mode;
@@ -21,9 +22,9 @@ pub use gpu_error::GpuError;
 pub use gpu_op::GpuOp;
 pub use hinting_level::HintingLevel;
 pub use painter_style::PainterStyle;
-pub use point::Point;
+pub use point::{MutPositionable, Point, Positionable};
 pub use points_mode::PointMode;
-pub use rect::Rect;
+pub use rect::{Boundable, BoundableExt, MutBoundable, Rect};
 pub use text_align::TextAlign;
 
 use pci::PciDevice;
@@ -35,7 +36,7 @@ pub struct Gpu {
 }
 
 impl Gpu {
-    pub unsafe fn flip_buffers(&mut self) {
+    pub unsafe fn flush(&mut self) {
         self.device.mmio.write_u8(0x1, 0x1);
     }
 
@@ -100,7 +101,9 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, state as i64 as f64)
             }
             GpuOp::GetPainterDithering => {}
-            GpuOp::MesaureText { object_id } => self.set_arg(GpuArgument::Arg0, object_id as f64),
+            GpuOp::MeasureTextWidth { object_id } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64)
+            }
             GpuOp::SetPainterTypeface { object_id } => {
                 self.set_arg(GpuArgument::Arg0, object_id.unwrap_or_default() as f64)
             }
@@ -118,11 +121,18 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg0, if state { 1f64 } else { 0f64 })
             }
             GpuOp::GetPainterSubpixelText => {}
-            GpuOp::MesaureString { address, length } => {
+            GpuOp::MeasureStringWidth { address, length } => {
                 self.set_arg(GpuArgument::Arg0, address as f64);
                 self.set_arg(GpuArgument::Arg1, length as f64);
             }
             GpuOp::GetPainterTypeface => {}
+            GpuOp::MeasureStringHeight { address, length } => {
+                self.set_arg(GpuArgument::Arg0, address as f64);
+                self.set_arg(GpuArgument::Arg1, length as f64);
+            }
+            GpuOp::MeasureTextHeight { object_id } => {
+                self.set_arg(GpuArgument::Arg0, object_id as f64);
+            }
             GpuOp::CreatePointsObject {
                 address,
                 size,
@@ -224,7 +234,7 @@ impl Gpu {
                 self.set_arg(GpuArgument::Arg1, position.x);
                 self.set_arg(GpuArgument::Arg2, position.y);
             }
-            GpuOp::DrawImageRect { object_id, dst } => {
+            GpuOp::DrawImageRect { object_id, ref dst } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
                 self.set_arg(GpuArgument::Arg1, dst.left);
                 self.set_arg(GpuArgument::Arg2, dst.top);
@@ -233,8 +243,8 @@ impl Gpu {
             }
             GpuOp::DrawImageRectSrc {
                 object_id,
-                src,
-                dst,
+                ref src,
+                ref dst,
             } => {
                 self.set_arg(GpuArgument::Arg0, object_id as f64);
                 self.set_arg(GpuArgument::Arg1, src.left);

@@ -45,7 +45,7 @@ pub enum GpuOp {
         state: bool,
     },
     GetPainterDithering,
-    MesaureText {
+    MeasureTextWidth {
         object_id: u64,
     },
     SetPainterTypeface {
@@ -71,11 +71,18 @@ pub enum GpuOp {
         state: bool,
     },
     GetPainterSubpixelText,
-    MesaureString {
+    MeasureStringWidth {
         address: usize,
         length: usize,
     },
     GetPainterTypeface,
+    MeasureStringHeight {
+        address: usize,
+        length: usize,
+    },
+    MeasureTextHeight {
+        object_id: u64,
+    },
     CreatePointsObject {
         address: usize,
         size: usize,
@@ -185,7 +192,7 @@ impl GpuOp {
             GpuOp::GetPainterAntialiasing => 0x10D,
             GpuOp::SetPainterDithering { .. } => 0x10E,
             GpuOp::GetPainterDithering => 0x10F,
-            GpuOp::MesaureText { .. } => 0x110,
+            GpuOp::MeasureTextWidth { .. } => 0x110,
             GpuOp::SetPainterTypeface { .. } => 0x111,
             GpuOp::SetPainterTextSize { .. } => 0x112,
             GpuOp::GetPainterTextSize => 0x113,
@@ -197,8 +204,10 @@ impl GpuOp {
             GpuOp::GetPainterTextAlign => 0x119,
             GpuOp::SetPainterSubpixelText { .. } => 0x11A,
             GpuOp::GetPainterSubpixelText => 0x11B,
-            GpuOp::MesaureString { .. } => 0x11C,
+            GpuOp::MeasureStringWidth { .. } => 0x11C,
             GpuOp::GetPainterTypeface => 0x11D,
+            GpuOp::MeasureStringHeight { .. } => 0x11E,
+            GpuOp::MeasureTextHeight { .. } => 0x11F,
 
             // Objects ops
             GpuOp::CreatePointsObject { .. } => 0x500,

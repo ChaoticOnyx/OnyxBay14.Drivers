@@ -1,3 +1,4 @@
+#![allow(clippy::missing_safety_doc)]
 #![no_std]
 
 use core::{alloc::GlobalAlloc, cell::RefCell};
