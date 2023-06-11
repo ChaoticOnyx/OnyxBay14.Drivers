@@ -1,7 +1,6 @@
 #![no_std]
 
 use gpu::{Boundable, Color, Gpu, GpuOp, Point, Positionable, Rect, TextAlign};
-use image::Image;
 use pci::PciBus;
 use screen::Screen;
 
@@ -9,6 +8,7 @@ mod image;
 mod text;
 mod typeface;
 
+pub use image::Image;
 pub use text::{Text, TextType};
 pub use typeface::Typeface;
 
