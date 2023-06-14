@@ -13,6 +13,7 @@ use pci::PciDevice;
 pub use port_mode::PortMode;
 
 pub const DEVICE_ID: u16 = 0x6B;
+pub const MAX_MESSAGE_SIZE: usize = 1500;
 
 const CALL_OP: usize = 0x0;
 const OP_RESULT: usize = 0x0;

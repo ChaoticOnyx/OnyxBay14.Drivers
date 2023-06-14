@@ -17,5 +17,6 @@ members = [
 	"stack_string",
 	"clint",
 	"net_hub",
+	"hdd",
 ]
 resolver = "2"

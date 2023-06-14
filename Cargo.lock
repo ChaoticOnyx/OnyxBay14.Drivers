@@ -61,6 +61,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "hdd"
+version = "0.1.0"
+dependencies = [
+ "pci",
+]
+
+[[package]]
 name = "health_analyzer"
 version = "0.1.0"
 dependencies = [

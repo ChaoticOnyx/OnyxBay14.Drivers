@@ -1,0 +1,7 @@
+[package]
+name = "hdd"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pci = { path = "../pci", package = "pci" }
