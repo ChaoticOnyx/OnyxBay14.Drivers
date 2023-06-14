@@ -16,5 +16,6 @@ members = [
 	"health_analyzer",
 	"stack_string",
 	"clint",
+	"net_hub",
 ]
 resolver = "2"

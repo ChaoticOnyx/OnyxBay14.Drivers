@@ -30,6 +30,8 @@ pub use text_align::TextAlign;
 use pci::PciDevice;
 
 pub const DEVICE_ID: u16 = 0x66;
+const CALL_OP: usize = 0x0;
+const OP_RESULT: usize = 0x0;
 
 pub struct Gpu {
     pub device: PciDevice,
@@ -268,8 +270,8 @@ impl Gpu {
             }
         }
 
-        self.device.mmio.write_u32(op.id(), 0x0);
-        let ret = self.device.mmio.read_f64(0x0);
+        self.device.mmio.write_u32(op.id(), CALL_OP);
+        let ret = self.device.mmio.read_f64(OP_RESULT);
 
         if (ret as i64) < 0 {
             Err(GpuError::from(ret as i64))
