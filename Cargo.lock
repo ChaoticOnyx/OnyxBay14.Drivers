@@ -54,6 +54,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "flash"
+version = "0.1.0"
+dependencies = [
+ "mmio",
+]
+
+[[package]]
+name = "floppy_drive"
+version = "0.1.0"
+dependencies = [
+ "pci",
+]
+
+[[package]]
 name = "gpu"
 version = "0.1.0"
 dependencies = [
