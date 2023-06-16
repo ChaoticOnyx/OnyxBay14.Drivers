@@ -231,6 +231,13 @@ name = "stack_string"
 version = "0.1.0"
 
 [[package]]
+name = "tpm"
+version = "0.1.0"
+dependencies = [
+ "mmio",
+]
+
+[[package]]
 name = "tts"
 version = "0.1.0"
 dependencies = [

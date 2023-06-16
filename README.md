@@ -29,6 +29,7 @@
 ├─ serial_terminal/ -- драйвер последовательного устройства.
 ├─ sgl/ -- Simple Graphics Library, библиотека для работы с графикой.
 ├─ stack_string/ -- небольшие строки на стэке.
+├─ tpm/ -- драйвер Trusted Platform Module.
 └─ tts/ -- драйвер для TTS устройств.
 ```
 
