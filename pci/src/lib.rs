@@ -7,9 +7,11 @@ use mmio::Mmio;
 pub use pci_device::PciDevice;
 use pci_device::PciDeviceIterator;
 
-const MMIO_ADDRESS: usize = 0x10000;
-const INFO_REGISTER: usize = 0;
-const ADDRESS_REGISTER: usize = 1;
+const MMIO_ADDRESS: usize = 0x0FF80000;
+const INFO_REGISTER: usize = 0x0;
+const ADDRESS_REGISTER: usize = 0x1;
+const UUID_REGISTER_OFFSET: usize = 0x2;
+pub const UUID_LENGTH: usize = 16;
 
 #[derive(Debug, Clone, Copy)]
 pub struct PciBus {
@@ -35,12 +37,19 @@ impl PciBus {
             return None;
         }
 
+        let mut uuid = [0; UUID_LENGTH];
+
+        for (i, b) in uuid.iter_mut().enumerate().take(UUID_LENGTH) {
+            *b = self.mmio.read_u8(UUID_REGISTER_OFFSET + i);
+        }
+
         let mmio = Mmio::new(device_address);
 
         Some(PciDevice {
             vendor_id,
             device_id,
             irq_pin,
+            uuid,
             mmio,
         })
     }
