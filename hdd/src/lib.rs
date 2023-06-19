@@ -16,6 +16,7 @@ const GET_SIZE: usize = 0x1;
 const CALL_OP: usize = 0x0;
 const OP_RESULT: usize = 0x0;
 
+#[derive(Debug, Clone)]
 pub struct Hdd {
     pub device: PciDevice,
 }

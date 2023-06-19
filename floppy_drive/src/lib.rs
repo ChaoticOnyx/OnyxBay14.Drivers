@@ -1,3 +1,4 @@
+#![allow(clippy::missing_safety_doc)]
 #![no_std]
 
 mod floppy_drive_argument;
@@ -16,6 +17,7 @@ const CALL_OP: usize = 0x0;
 const EJECT_DISK: usize = 0x1;
 const OP_RESULT: usize = 0x0;
 
+#[derive(Debug, Clone)]
 pub struct FloppyDrive {
     pub device: PciDevice,
 }

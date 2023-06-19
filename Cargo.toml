@@ -21,5 +21,6 @@ members = [
 	"flash",
 	"floppy_drive",
 	"tpm",
+	"disk",
 ]
 resolver = "2"

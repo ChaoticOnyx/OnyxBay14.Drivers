@@ -1,0 +1,12 @@
+[package]
+name = "disk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hdd = { path = "../hdd", package = "hdd" }
+floppy_drive = { path = "../floppy_drive", package = "floppy_drive" }
+uuid = { version = "1.3.4", features = [
+	"v4",
+	"getrandom",
+], default-features = false }
